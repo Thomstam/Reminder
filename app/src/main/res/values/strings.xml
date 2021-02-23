@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Reminder</string>
+    <string name="reminder_name">Enter Task Here</string>
+    <string name="what_you_have_to_do">What you have to do?</string>
+    <string name="due_date">Due Date</string>
+    <string name="location_assistant">Location Assistant</string>
+    <string name="worst">Worst</string>
+    <string name="average">Average</string>
+</resources>
