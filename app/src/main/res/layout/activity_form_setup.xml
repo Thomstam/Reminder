@@ -1,93 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/scrollViewFormSetup"
-    android:scrollbars="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FormSetupActivity">
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/scrollViewFormSetup"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:ignore="UseSwitchCompatOrMaterialXml"
-        android:weightSum="2">
+        android:scrollbars="vertical"
+        tools:ignore="MissingConstraints">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/what_you_have_to_do"
-            android:textSize="24sp"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            />
-        <EditText
-            android:id="@+id/reminderName"
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/reminder_name"
-            android:inputType="text|textAutoCorrect"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            android:autofillHints="" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:text="@string/due_date"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            />
-
-        <CalendarView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            />
-
-        <Switch
-            android:id="@+id/LocationFeature"
-            android:text="@string/location_assistant"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            android:onClick="switchCheck">
-        </Switch>
+            android:orientation="vertical"
+            android:weightSum="3">
 
 
-        <RadioGroup
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/Average_Worst_Scenario"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            tools:ignore="InefficientWeight">
-
-            <RadioButton
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/Worst_Case_Scenario"
-                android:text="@string/worst"
-                android:textSize="18sp"
-                android:layout_weight="2"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginStart="16dp"/>
+                android:text="@string/what_you_have_to_do"
+                android:textSize="24sp" />
 
-            <RadioButton
+            <EditText
+                android:id="@+id/reminderName"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:autofillHints=""
+                android:hint="@string/reminder_name"
+                android:inputType="text|textAutoCorrect" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/Average_Case_Scenario"
-                android:text="@string/average"
-                android:textSize="18sp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/due_date"
+                android:textSize="24sp" />
+
+            <CalendarView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp" />
+
+            <Switch
+                android:id="@+id/LocationFeature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:onClick="switchCheck"
+                android:text="@string/location_assistant"
+                android:textSize="24sp"
+                tools:ignore="UseSwitchCompatOrMaterialXml">
+
+            </Switch>
+
+            <ImageButton
+                android:id="@+id/DestinationCalculator"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@raw/location"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:onClick="openGoogleMaps"
+                />
+
+
+            <RadioGroup
+                android:id="@+id/Average_Worst_Scenario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_weight="1"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="16dp"/>
-        </RadioGroup>
-    </LinearLayout>
-</ScrollView>
+                android:orientation="horizontal"
+                tools:ignore="InefficientWeight"
+                >
+
+
+                <RadioButton
+                    android:id="@+id/Average_Case_Scenario"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="@string/average"
+                    android:textSize="18sp" />
+
+
+                <RadioButton
+                    android:id="@+id/Worst_Case_Scenario"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_weight="2"
+                    android:text="@string/worst"
+                    android:textSize="18sp" />
+            </RadioGroup>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

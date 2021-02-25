@@ -6,4 +6,7 @@
     <string name="location_assistant">Location Assistant</string>
     <string name="worst">Worst</string>
     <string name="average">Average</string>
+    <string name="title_activity_destination">DestinationActivity</string>
+    <string name="search_location">Search Location</string>
+    <string name="enter_address_here">Enter Address Here</string>
 </resources>
