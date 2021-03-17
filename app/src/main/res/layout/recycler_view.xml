@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/standardMargin"
+    android:layout_marginStart="@dimen/halfStandardMargin"
+    android:layout_marginEnd="@dimen/halfStandardMargin"
+    android:layout_marginTop="@dimen/halfStandardMargin"
+    android:background="@color/quantum_grey">
+
+    <ImageView
+        android:id="@+id/RecyclerIcon"
+        android:layout_width="50dp"
+        android:layout_height="60dp"
+        android:contentDescription="@string/recycler_icon"
+        android:src="@drawable/calendar_icon"
+        tools:ignore="ImageContrastCheck"
+        android:layout_centerVertical="true"
+        android:layout_below="@+id/nameOfTheReminder"/>
+
+    <TextView
+        android:id="@+id/nameOfTheReminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/name_of_the_reminder"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/recyclerTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nameOfTheReminder"
+        android:layout_marginStart="@dimen/halfStandardMargin"
+        android:layout_marginTop="@dimen/halfStandardMargin"
+        android:layout_toEndOf="@id/RecyclerIcon"
+        android:text="13:50"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        tools:ignore="HardcodedText,TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/dateOfTheReminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/recyclerTime"
+        android:layout_marginStart="@dimen/halfStandardMargin"
+        android:layout_marginTop="@dimen/halfStandardMargin"
+        android:layout_toEndOf="@+id/RecyclerIcon"
+        android:text="13/11/1997"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        tools:ignore="HardcodedText,TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/modelType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nameOfTheReminder"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/halfStandardMargin"
+        android:text="@string/average"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        tools:ignore="TextContrastCheck" />
+
+    <ImageView
+        android:id="@+id/transitIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/modelType"
+        android:layout_below="@id/nameOfTheReminder"
+        android:layout_marginTop="@dimen/halfStandardMargin"
+        android:layout_marginEnd="@dimen/standardMargin"
+        android:src="@drawable/walk_directions_icon"
+        android:contentDescription= "modelTypeIcon"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/timeToDestination"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/transitIcon"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/halfStandardMargin"
+        android:text="12 hours 55 minutes"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        tools:ignore="HardcodedText,TextContrastCheck" />
+
+
+
+
+
+</RelativeLayout>

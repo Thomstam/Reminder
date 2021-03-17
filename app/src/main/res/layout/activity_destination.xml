@@ -1,38 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+
     <fragment
-        xmlns:map="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".DestinationActivity" />
+        tools:context=".DestinationActivity"
+        />
 
-        <RelativeLayout
+    <RelativeLayout
+        android:id="@+id/firstRelLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standardMargin"
+        android:layout_marginLeft="@dimen/standardMargin"
+        android:layout_marginRight="@dimen/standardMargin"
+        android:background="@color/white">
+
+        <fragment android:id="@+id/autocomplete_fragmentStartingLocation"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="#fff"
-            android:id="@+id/relLayout1">
+            android:layout_height="wrap_content"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            />
 
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:id="@+id/icyMagnify"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="10dp"
+    </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/secondRelLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standardMargin"
+        android:layout_marginLeft="@dimen/standardMargin"
+        android:layout_marginRight="@dimen/standardMargin"
+        android:background="@color/white"
+        android:layout_below="@+id/firstRelLayout">
+
+        <fragment android:id="@+id/autocomplete_fragmentDestination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            />
+
+    </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/currentLocation"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_gps"
+        android:layout_alignEnd="@id/secondRelLayout"
+        android:layout_marginEnd="@dimen/standardMargin"
+        android:layout_marginTop="@dimen/standardMargin"
+        android:layout_below="@id/secondRelLayout"
+        android:contentDescription="@string/relocating_to_current_position" />
+
+    <Button
+        android:id="@+id/getDirectionsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:text="@string/get_directions"
+        android:textSize="12sp"
+        android:layout_marginBottom="@dimen/standardMargin"
+        android:layout_marginEnd="@dimen/standardMargin"
+        android:background="@color/white"
+        android:textColor="@color/black"
+        android:padding="2dp"
+
+        />
+
+
+
+    <RelativeLayout
+        android:id="@+id/directionSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standardMargin"
+        android:layout_marginBottom="@dimen/standardMargin"
+        android:layout_marginEnd="@dimen/standardMargin"
+        android:layout_toStartOf="@id/getDirectionsButton"
+        android:layout_alignParentBottom="true"
+        android:visibility="invisible">
+
+
+
+
+        <RadioGroup
+
+            android:id="@+id/transitSelection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:checkedButton="@id/carDirections"
+            tools:ignore="UselessParent"
+            android:background="@color/white"
+            >
+
+            <RadioButton
+                android:drawableStart="@drawable/car_direction_icon"
+                android:id="@+id/carDirections"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
                 />
 
+            <RadioButton
+                android:drawableStart="@drawable/walk_directions_icon"
+                android:id="@+id/walkDirections"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                />
+        </RadioGroup>
+    </RelativeLayout>
 
-        </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/directionSection"
+        android:layout_marginStart="@dimen/standardMargin"
+        android:layout_marginBottom="@dimen/standardMargin">
+
+        <Button
+            android:id="@+id/doneButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/standardMargin"
+            android:textSize="24sp"
+            android:text="@string/done"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+
+
+
 
 </RelativeLayout>

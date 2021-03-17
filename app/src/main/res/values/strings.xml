@@ -9,4 +9,33 @@
     <string name="title_activity_destination">DestinationActivity</string>
     <string name="search_location">Search Location</string>
     <string name="enter_address_here">Enter Address Here</string>
+    <string name="starting_location">Starting Location</string>
+    <string name="ending_location">Ending Location</string>
+    <string name="title_activity_destination_vol2">DestinationActivityVol2</string>
+    <string name="relocating_to_current_position">Relocating To Current Position</string>
+    <string name="get_directions">Get Directions</string>
+    <string name="goes_to_google_maps">Goes To Google Maps</string>
+    <string name="carTransitSelectionImage">CarTransitSelectionImage</string>
+    <string name="time">Time:</string>
+    <string name="due_time">Due Time</string>
+    <string name="arrival_time">Arrival Time (24h)</string>
+    <string name="notification">Notification:</string>
+    <string name="done">DONE</string>
+    <string name="creates_new_reminder">Creates New Reminder</string>
+    <string name="completeReminder">CompleteReminder</string>
+    <string name="recycler_icon">Recycler Icon</string>
+    <string name="name_of_the_reminder">Name Of The Reminder</string>
+
+    <string-array name="notification_array">
+        <item>5 minutes earlier</item>
+        <item>30 minutes earlier</item>
+        <item>1 hour earlier</item>
+        <item>2 hours earlier</item>
+        <item>3 hours earlier</item>
+    </string-array>
+
+    <dimen name="standardMargin">16dp</dimen>
+    <dimen name="doubleStandardMargin">32dp</dimen>
+    <dimen name="radioButtonSize">40dp</dimen>
+    <dimen name="halfStandardMargin">8dp</dimen>
 </resources>
