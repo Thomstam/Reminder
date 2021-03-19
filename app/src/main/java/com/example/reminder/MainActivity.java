@@ -8,10 +8,14 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
+import com.example.reminder.roomClasses.ReminderDataBase;
+import com.example.reminder.roomClasses.ReminderViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -22,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
     private RecyclerCustom recyclerCustom;
     List<Reminder> reminders = new ArrayList<>();
     private static final int REQUEST_CODE = 666;
+    private ReminderViewModel reminderViewModel;
 
 
 
@@ -44,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
                 Reminder reminder = (Reminder) data.getExtras().get("Reminder");
                 reminders.add(reminder);
                 recyclerCustom.notifyDataSetChanged();
+                reminderViewModel.insert(reminder);
             }
         }
     }
@@ -55,6 +61,9 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ReminderDataBase db = Room.databaseBuilder(getApplicationContext(),
+                ReminderDataBase.class, "database-name").build();
+
          createNewReminderForm();
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -64,7 +73,11 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
          recyclerView.setLayoutManager(layoutManager);
          recyclerView.setItemAnimator(new DefaultItemAnimator());
          recyclerView.setAdapter(recyclerCustom);
-         recyclerCustom.setClickListener(this);
+
+
+        reminderViewModel = new ViewModelProvider(this).get(ReminderViewModel.class);
+
+
     }
 
 

@@ -3,18 +3,25 @@ package com.example.reminder;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.ArrayList;
 
+@Entity
 public class Reminder implements Parcelable {
 
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     private final String nameOfTheReminder;
     private final String dateOfTheReminder;
     private final String timeOfTheReminder;
     private final ArrayList<String> timeToGetToDestination;
     private long timeToNotifyForTheReminder;
-    private boolean isLocationFeatureActive;
     private String modelAverageOrWorse;
     private String typeOfTransfer;
+    private boolean isLocationFeatureActive;
+
 
     public Reminder(String nameOfTheReminder, String dateOfTheReminder, String timeOfTheReminder, ArrayList<String> timeToGetToDestination, long timeToNotifyForTheReminder, boolean isLocationFeatureActive, String modelAverageOrWorse, String typeOfTransfer){
         this.nameOfTheReminder = nameOfTheReminder;
@@ -89,6 +96,11 @@ public class Reminder implements Parcelable {
     public void setModelAverageOrWorse(String modelAverageOrWorse) {
         this.modelAverageOrWorse = modelAverageOrWorse;
     }
+
+    public int getId(){return id;}
+
+    public void setId(int id){ this.id = id;}
+
 
     public String getTypeOfTransfer() {
         return typeOfTransfer;
