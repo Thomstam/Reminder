@@ -12,21 +12,34 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-
 public class ReminderViewModel extends AndroidViewModel {
 
     private ReminderRepository reminderRepository;
+    private LiveData<List<Reminder>> reminders;
 
-    private final LiveData<List<Reminder>> reminders;
-
-
-    public ReminderViewModel(@NonNull @NotNull Application application) {
+     public ReminderViewModel(@NonNull @NotNull Application application) {
         super(application);
         reminderRepository = new ReminderRepository(application);
-        reminders = reminderRepository.getReminders();
+        reminders = reminderRepository.getAllReminders();
     }
 
-    public LiveData<List<Reminder>> getReminders() { return reminders; }
+    public void insert(Reminder reminder){
+         reminderRepository.insert(reminder);
+    }
 
-    public void insert(Reminder reminder) { reminderRepository.insert(reminder); }
+    public void update(Reminder reminder){
+        reminderRepository.update(reminder);
+    }
+
+    public void delete(Reminder reminder){
+        reminderRepository.delete(reminder);
+    }
+
+    public void deleteAllReminders(){
+        reminderRepository.deleteAllReminders();
+    }
+
+    public LiveData<List<Reminder>> getReminders(){
+         return reminders;
+    }
 }

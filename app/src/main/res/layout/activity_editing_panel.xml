@@ -1,39 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".EditingPanel"
     android:orientation="vertical">
 
 
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/design_default_color_primary"
-        app:title="Reminder4U">
+        android:background="@color/design_default_color_primary">
 
         <ImageButton
-            android:id="@+id/completeReminder"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity = "end"
-            android:src="@drawable/check_icon"
-            android:layout_marginTop="@dimen/halfStandardMargin"
-            android:layout_marginEnd="@dimen/standardMargin"
-            android:contentDescription="@string/completeReminder"
+            android:id="@+id/deleteReminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@color/design_default_color_primary"
-            android:clickable="true"
-            android:focusable="true" />
+            android:contentDescription="DeleteReminder"
+            android:src="@drawable/ic_baseline_delete_24"
+            tools:ignore="HardcodedText,TouchTargetSizeCheck" />
+
+        <ImageButton
+            android:id="@+id/updateReminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:background="@color/design_default_color_primary"
+            android:contentDescription="UpdateReminder"
+            android:src="@drawable/check_icon"
+            tools:ignore="HardcodedText,TouchTargetSizeCheck" />
+
 
 
     </androidx.appcompat.widget.Toolbar>
 
-
-
     <ScrollView
-        android:id="@+id/scrollView"
+        android:id="@+id/scrollViewEditPanel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
@@ -47,8 +51,6 @@
             android:orientation="vertical"
             android:padding="@dimen/standardMargin">
 
-
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -56,8 +58,9 @@
                 android:textSize="24sp"
                 />
 
+
             <EditText
-                android:id="@+id/reminderName"
+                android:id="@+id/reminderNameEditPanel"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="@dimen/standardMargin"
@@ -76,13 +79,12 @@
                 android:textSize="24sp"/>
 
             <TimePicker
-                android:id="@+id/dueTime"
+                android:id="@+id/dueTimeEditPanel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:timePickerMode="spinner"
                 android:layout_marginTop="@dimen/standardMargin"
                 />
-
 
             <TextView
                 android:layout_width="wrap_content"
@@ -92,7 +94,7 @@
                 android:layout_marginTop="@dimen/standardMargin"/>
 
             <CalendarView
-                android:id="@+id/dueDate"
+                android:id="@+id/dueDateEditPanel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/standardMargin"
@@ -106,7 +108,7 @@
                 android:layout_marginTop="@dimen/standardMargin"/>
 
             <Spinner
-                android:id="@+id/notificationSpinner"
+                android:id="@+id/notificationSpinnerEditPanel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:drawable/btn_dropdown"
@@ -114,35 +116,15 @@
                 android:layout_marginTop="@dimen/standardMargin"
                 />
 
-            <Switch
-                android:id="@+id/LocationFeature"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_marginTop="@dimen/standardMargin"
-                android:text="@string/location_assistant"
-                android:textSize="24sp"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-            <ImageButton
-                android:id="@+id/DestinationCalculator"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="@dimen/standardMargin"
-                android:src="@drawable/map_icon"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/goes_to_google_maps"
-                android:visibility="gone"/>
-
             <RadioGroup
-                android:id="@+id/Average_Worst_Scenario"
+                android:id="@+id/Average_Worst_ScenarioEditPanel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/Average_Case_Scenario"
+                    android:id="@+id/Average_Case_ScenarioEditPanel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -151,7 +133,7 @@
                     android:textSize="18sp"/>
 
                 <RadioButton
-                    android:id="@+id/Worst_Case_Scenario"
+                    android:id="@+id/Worst_Case_ScenarioEditPanel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -161,39 +143,43 @@
             </RadioGroup>
 
             <RadioGroup
-                android:id="@+id/transitModes"
+                android:id="@+id/transitModesEditPanel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:orientation="horizontal">
 
                 <RadioButton
+                    android:id="@+id/drivingModeEditPanel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/drivingMode"
                     android:checked="true"
                     android:drawableStart="@drawable/car_direction_icon"/>
 
                 <RadioButton
+                    android:id="@+id/walkingModeEditPanel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/standardMargin"
-                    android:id="@+id/walkingMode"
                     android:drawableStart="@drawable/walk_directions_icon"/>
             </RadioGroup>
 
             <TextView
-                android:visibility="gone"
+                android:id="@+id/durationToDestinationEditPanel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/durationToDestination"
                 android:textSize="24sp"
-                android:layout_marginTop="@dimen/standardMargin" />
+                android:layout_marginTop="@dimen/standardMargin"/>
+
+
 
         </LinearLayout>
+
+
 
     </ScrollView>
 
 
 </LinearLayout>
+
+

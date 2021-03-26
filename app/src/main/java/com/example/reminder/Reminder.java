@@ -13,10 +13,12 @@ public class Reminder implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
-    private final String nameOfTheReminder;
-    private final String dateOfTheReminder;
-    private final String timeOfTheReminder;
-    private final ArrayList<String> timeToGetToDestination;
+
+
+    private String nameOfTheReminder;
+    private String dateOfTheReminder;
+    private String timeOfTheReminder;
+    private ArrayList<String> timeToGetToDestination;
     private long timeToNotifyForTheReminder;
     private String modelAverageOrWorse;
     private String typeOfTransfer;
@@ -34,16 +36,7 @@ public class Reminder implements Parcelable {
         this.typeOfTransfer = typeOfTransfer;
     }
 
-    protected Reminder(Parcel in) {
-        nameOfTheReminder = in.readString();
-        dateOfTheReminder = in.readString();
-        timeOfTheReminder = in.readString();
-        timeToGetToDestination = in.createStringArrayList();
-        timeToNotifyForTheReminder = in.readLong();
-        isLocationFeatureActive = in.readByte() != 0;
-        modelAverageOrWorse = in.readString();
-        typeOfTransfer = in.readString();
-    }
+
 
     public static final Creator<Reminder> CREATOR = new Creator<Reminder>() {
         @Override
@@ -57,6 +50,8 @@ public class Reminder implements Parcelable {
         }
     };
 
+    public void setNameOfTheReminder(String nameOfTheReminder){ this.nameOfTheReminder = nameOfTheReminder;}
+
     public String getNameOfTheReminder() {
         return nameOfTheReminder;
     }
@@ -65,6 +60,10 @@ public class Reminder implements Parcelable {
         return dateOfTheReminder;
     }
 
+    public void setDateOfTheReminder(String dateOfTheReminder){ this.dateOfTheReminder = dateOfTheReminder; }
+
+    public void setTimeOfTheReminder(String timeOfTheReminder){ this.timeOfTheReminder = timeOfTheReminder;}
+
     public String getTimeOfTheReminder() {
         return timeOfTheReminder;
     }
@@ -72,6 +71,7 @@ public class Reminder implements Parcelable {
     public ArrayList<String> getTimeToGetToDestination() {
         return timeToGetToDestination;
     }
+
 
     public long getTimeToNotifyForTheReminder() {
         return timeToNotifyForTheReminder;
@@ -115,8 +115,21 @@ public class Reminder implements Parcelable {
         return 0;
     }
 
+    protected Reminder(Parcel in) {
+        id = in.readInt();
+        nameOfTheReminder = in.readString();
+        dateOfTheReminder = in.readString();
+        timeOfTheReminder = in.readString();
+        timeToGetToDestination = in.createStringArrayList();
+        timeToNotifyForTheReminder = in.readLong();
+        isLocationFeatureActive = in.readByte() != 0;
+        modelAverageOrWorse = in.readString();
+        typeOfTransfer = in.readString();
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(nameOfTheReminder);
         dest.writeString(dateOfTheReminder);
         dest.writeString(timeOfTheReminder);
@@ -125,5 +138,6 @@ public class Reminder implements Parcelable {
         dest.writeByte((byte) (isLocationFeatureActive ? 1 : 0));
         dest.writeString(modelAverageOrWorse);
         dest.writeString(typeOfTransfer);
+
     }
 }

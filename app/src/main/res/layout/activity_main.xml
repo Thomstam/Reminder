@@ -7,6 +7,13 @@
     android:layout_height="match_parent">
 
 
+
+    <Toolbar
+        android:id="@+id/toolBarMain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/createNewReminder"
         android:layout_width="wrap_content"
@@ -28,12 +35,14 @@
         android:layout_marginTop="@dimen/halfStandardMargin"
         android:layout_marginEnd="@dimen/halfStandardMargin"
         android:layout_marginStart="@dimen/halfStandardMargin"
+        android:layout_below="@id/toolBarMain"
         tools:ignore="SpeakableTextPresentCheck">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/recycler_view"/>
 
     </ScrollView>
 </RelativeLayout>

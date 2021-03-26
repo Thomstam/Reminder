@@ -238,11 +238,6 @@ public class FormSetupActivity extends AppCompatActivity {
                scrollView.scrollTo(reminderName.getScrollX(), reminderName.getScrollY());
                return;
             }
-            if (dayPicked == null){
-                Toast.makeText(this, "Set Date", Toast.LENGTH_SHORT).show();
-                scrollView.scrollTo(dueDate.getScrollX(), dueDate.getScrollY());
-                return;
-            }
             if (locationFeatureSwitch.isChecked()){
                 if (timeForDirections.isEmpty()){
                     Toast.makeText(this, "Open Google maps Or close this feature", Toast.LENGTH_SHORT).show();

@@ -6,6 +6,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.example.reminder.Reminder;
 
@@ -18,11 +19,16 @@ public interface ReminderDao {
     void insert(Reminder reminder);
 
     @Delete
-    void delete(Reminder reminder);
+    void deleteReminders(Reminder reminder);
 
-    @Query("SELECT * FROM Reminder")
-    LiveData <List<Reminder>> getAllReminders();
+    @Update
+    void updateReminder(Reminder reminder);
 
     @Query("DELETE FROM Reminder")
-    void deleteAll();
+    void nukeTable();
+
+    @Query("SELECT * FROM Reminder ORDER BY id DESC")
+    LiveData<List<Reminder>> getAllReminders();
+
+
 }

@@ -1,6 +1,6 @@
 package com.example.reminder;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,25 +14,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerCustom extends RecyclerView.Adapter<RecyclerCustom.ReminderViewHolder>{
+public class RecyclerCustom extends RecyclerView.Adapter<RecyclerCustom.ReminderViewHolder> {
 
-    private List<Reminder> reminderList;
-    private Context context;
-    private ItemClickListener itemClickListener;
+    private List<Reminder> reminderList = new ArrayList<>();
+    private onItemClickListener listener;
 
 
-    public RecyclerCustom(List<Reminder> reminderList, Context context){
-        this.reminderList = reminderList;
-        this.context = context;
+    public RecyclerCustom() {
     }
 
     @NonNull
     @NotNull
     @Override
     public RecyclerCustom.ReminderViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(context).inflate(R.layout.recycler_view, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view, parent, false);
         return new ReminderViewHolder(itemView);
 
     }
@@ -43,21 +41,21 @@ public class RecyclerCustom extends RecyclerView.Adapter<RecyclerCustom.Reminder
         holder.nameOfTheReminder.setText(reminderList.get(position).getNameOfTheReminder());
         holder.dateOfTheReminder.setText(reminderList.get(position).getDateOfTheReminder());
         holder.timeOfTheReminder.setText(reminderList.get(position).getTimeOfTheReminder());
-        if (reminderList.get(position).isLocationFeatureActive()){
-            if (reminderList.get(position).getTypeOfTransfer().equals("Walking")){
+        if (reminderList.get(position).isLocationFeatureActive()) {
+            if (reminderList.get(position).getTypeOfTransfer().equals("Walking")) {
                 holder.transitIcon.setImageResource(R.drawable.walk_directions_icon);
-            }else {
+            } else {
                 holder.transitIcon.setImageResource(R.drawable.car_direction_icon);
             }
             holder.trafficModel.setText(reminderList.get(position).getModelAverageOrWorse());
-            if (reminderList.get(position).getTypeOfTransfer().equals("Walking")){
+            if (reminderList.get(position).getTypeOfTransfer().equals("Walking")) {
                 holder.timeToDestination.setText(reminderList.get(position).getTimeToGetToDestination().get(0));
-            }else if (reminderList.get(position).getModelAverageOrWorse().equals("Average")){
+            } else if (reminderList.get(position).getModelAverageOrWorse().equals("Average")) {
                 holder.timeToDestination.setText(reminderList.get(position).getTimeToGetToDestination().get(1));
-            }else {
+            } else {
                 holder.timeToDestination.setText(reminderList.get(position).getTimeToGetToDestination().get(2));
             }
-        }else {
+        } else {
             holder.transitIcon.setVisibility(View.GONE);
             holder.trafficModel.setVisibility(View.GONE);
             holder.timeToDestination.setVisibility(View.GONE);
@@ -66,21 +64,24 @@ public class RecyclerCustom extends RecyclerView.Adapter<RecyclerCustom.Reminder
 
     }
 
-    public void setClickListener(ItemClickListener itemClickListener){
-        this.itemClickListener = itemClickListener;
-    }
-
     @Override
     public int getItemCount() {
         return reminderList.size();
     }
 
-    public class ReminderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setReminderList(List<Reminder> reminders) {
+        this.reminderList = reminders;
+        notifyDataSetChanged();
+    }
+
+    public class ReminderViewHolder extends RecyclerView.ViewHolder {
 
         public TextView nameOfTheReminder, timeOfTheReminder, dateOfTheReminder, trafficModel, timeToDestination;
         public ImageView transitIcon;
 
-        public ReminderViewHolder(View view){
+        public ReminderViewHolder(View view) {
             super(view);
             nameOfTheReminder = view.findViewById(R.id.nameOfTheReminder);
             timeOfTheReminder = view.findViewById(R.id.recyclerTime);
@@ -88,13 +89,16 @@ public class RecyclerCustom extends RecyclerView.Adapter<RecyclerCustom.Reminder
             trafficModel = view.findViewById(R.id.modelType);
             timeToDestination = view.findViewById(R.id.timeToDestination);
             transitIcon = view.findViewById(R.id.transitIcon);
-        }
+            view.setOnClickListener(v -> listener.onItemClick(reminderList.get(getAdapterPosition())));
 
-        @Override
-        public void onClick(View v) {
-            if (itemClickListener != null){
-                itemClickListener.onClick(v, getAdapterPosition());
-            }
         }
+    }
+
+    public interface onItemClickListener {
+        void onItemClick(Reminder reminder);
+    }
+
+    public void setOnItemClickListener(onItemClickListener listener) {
+        this.listener = listener;
     }
 }

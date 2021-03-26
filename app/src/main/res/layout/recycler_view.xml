@@ -5,18 +5,19 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/standardMargin"
     android:layout_marginStart="@dimen/halfStandardMargin"
-    android:layout_marginEnd="@dimen/halfStandardMargin"
-    android:layout_marginTop="@dimen/halfStandardMargin"
-    android:background="@color/quantum_grey">
+    android:layout_marginEnd="@dimen/standardMargin"
+    android:layout_marginTop="@dimen/standardMargin"
+    android:background="@color/design_default_color_primary">
 
     <ImageView
         android:id="@+id/RecyclerIcon"
-        android:layout_width="50dp"
-        android:layout_height="60dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:contentDescription="@string/recycler_icon"
         android:src="@drawable/calendar_icon"
         tools:ignore="ImageContrastCheck"
         android:layout_centerVertical="true"
+        android:layout_marginBottom="@dimen/halfStandardMargin"
         android:layout_below="@+id/nameOfTheReminder"/>
 
     <TextView
@@ -25,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:text="@string/name_of_the_reminder"
-        android:textSize="18sp"
+        android:textSize="22sp"
         android:textColor="@color/white"
         tools:ignore="TextContrastCheck" />
 
@@ -39,7 +40,7 @@
         android:layout_toEndOf="@id/RecyclerIcon"
         android:text="13:50"
         android:textColor="@color/white"
-        android:textSize="15sp"
+        android:textSize="18sp"
         tools:ignore="HardcodedText,TextContrastCheck" />
 
     <TextView
@@ -52,7 +53,7 @@
         android:layout_toEndOf="@+id/RecyclerIcon"
         android:text="13/11/1997"
         android:textColor="@color/white"
-        android:textSize="15sp"
+        android:textSize="18sp"
         tools:ignore="HardcodedText,TextContrastCheck" />
 
     <TextView
@@ -64,13 +65,13 @@
         android:layout_marginTop="@dimen/halfStandardMargin"
         android:text="@string/average"
         android:textColor="@color/white"
-        android:textSize="15sp"
+        android:textSize="18sp"
         tools:ignore="TextContrastCheck" />
 
     <ImageView
         android:id="@+id/transitIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_toStartOf="@id/modelType"
         android:layout_below="@id/nameOfTheReminder"
         android:layout_marginTop="@dimen/halfStandardMargin"
@@ -83,12 +84,12 @@
         android:id="@+id/timeToDestination"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/transitIcon"
+        android:layout_below="@id/modelType"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/halfStandardMargin"
         android:text="12 hours 55 minutes"
         android:textColor="@color/white"
-        android:textSize="15sp"
+        android:textSize="18sp"
         tools:ignore="HardcodedText,TextContrastCheck" />
 
 
