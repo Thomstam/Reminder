@@ -53,12 +53,13 @@
         android:id="@+id/currentLocation"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/ic_gps"
-        android:layout_alignEnd="@id/secondRelLayout"
-        android:layout_marginEnd="@dimen/standardMargin"
-        android:layout_marginTop="@dimen/standardMargin"
         android:layout_below="@id/secondRelLayout"
-        android:contentDescription="@string/relocating_to_current_position" />
+        android:layout_alignEnd="@id/secondRelLayout"
+        android:layout_marginTop="@dimen/standardMargin"
+        android:layout_marginEnd="@dimen/standardMargin"
+        android:contentDescription="@string/relocating_to_current_position"
+        android:src="@drawable/ic_gps"
+        tools:ignore="ImageContrastCheck" />
 
     <Button
         android:id="@+id/getDirectionsButton"

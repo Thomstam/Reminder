@@ -1,11 +1,8 @@
 package com.example.reminder.roomClasses;
 
 import android.app.Application;
-
 import androidx.lifecycle.LiveData;
-
 import com.example.reminder.Reminder;
-
 import java.util.List;
 
 public class ReminderRepository {

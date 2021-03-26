@@ -15,12 +15,10 @@ import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import com.example.reminder.R;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.Status;
@@ -47,11 +45,9 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,7 +70,7 @@ public class DestinationActivity extends AppCompatActivity implements OnMapReady
     private Marker startingPoint;
     private Marker destinationPoint;
     private AutocompleteSupportFragment startingPointSearchbar;
-    private static final String apiKey = "AIzaSyAZZVpVH5-meD81KVOCmDc_4v_m4wJicYU";
+    private static String apiKey = null;
     private GoogleMap mMap;
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COURSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -88,12 +84,8 @@ public class DestinationActivity extends AppCompatActivity implements OnMapReady
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_destination);
-        directionSection = findViewById(R.id.directionSection);
-        timeDirectionsNeeds = new ArrayList<>();
-        Bundle bundle = getIntent().getExtras();
-        departureTimeInUTC = bundle.getString("TimeInUTC");
-        Places.initialize(getApplicationContext(), apiKey);
-        PlacesClient placesClient = Places.createClient(this);
+
+        necessaryStuff();
 
         createLocationRequest();
 
@@ -112,6 +104,16 @@ public class DestinationActivity extends AppCompatActivity implements OnMapReady
         destinationAutoCompleteFragment();
 
         doneButtonFinish();
+    }
+
+    private void necessaryStuff() {
+        directionSection = findViewById(R.id.directionSection);
+        timeDirectionsNeeds = new ArrayList<>();
+        Bundle bundle = getIntent().getExtras();
+        departureTimeInUTC = bundle.getString("TimeInUTC");
+        apiKey = getString(R.string.googleApi);
+        Places.initialize(getApplicationContext(), apiKey);
+        PlacesClient placesClient = Places.createClient(this);
     }
 
     protected void createLocationRequest() {
@@ -350,9 +352,6 @@ public class DestinationActivity extends AppCompatActivity implements OnMapReady
         String output = "json";
         return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + apiKey;
     }
-
-
-
 
 
     private String downloadUrl(String strUrl) throws IOException {

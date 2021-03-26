@@ -2,10 +2,8 @@ package com.example.reminder;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
 import java.util.ArrayList;
 
 @Entity
@@ -13,8 +11,6 @@ public class Reminder implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
-
-
     private String nameOfTheReminder;
     private String dateOfTheReminder;
     private String timeOfTheReminder;
