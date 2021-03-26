@@ -1,4 +1,4 @@
-package com.example.reminder;
+package com.example.reminder.formsPackage;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -21,6 +21,9 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.reminder.R;
+import com.example.reminder.Reminder;
+import com.example.reminder.googleAPI.DestinationActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 

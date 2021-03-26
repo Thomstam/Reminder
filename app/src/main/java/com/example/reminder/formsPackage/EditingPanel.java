@@ -1,4 +1,4 @@
-package com.example.reminder;
+package com.example.reminder.formsPackage;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -16,6 +16,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.reminder.R;
+import com.example.reminder.Reminder;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,7 +29,8 @@ import java.util.Objects;
 public class EditingPanel extends AppCompatActivity {
 
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    @SuppressLint("SimpleDateFormat")
+    private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
     private Reminder tempReminder;
     private CalendarView dueDate;
     private Calendar calendar;
@@ -41,9 +45,7 @@ public class EditingPanel extends AppCompatActivity {
     private ScrollView scrollView;
     private RadioGroup scenarioCases;
     private Spinner notificationDropdown;
-    private ArrayList<String> timeForDirections = new ArrayList<>();
-    private ImageButton updateReminder;
-    private ImageButton deleteReminder;
+    private final ArrayList<String> timeForDirections = new ArrayList<>();
     private TextView reminderName;
     private TimePicker dueTime;
 
@@ -62,34 +64,28 @@ public class EditingPanel extends AppCompatActivity {
         }
     }
 
-    private void setNotificationDropdown(){
-        notificationDropdown = findViewById(R.id.notificationSpinnerEditPanel);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.notification_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        notificationDropdown.setAdapter(adapter);
-        notificationDropdown.setSelection(0);
+    private void initializeFields() throws ParseException {
+        scrollView = findViewById(R.id.scrollViewEditPanel);
+
+        setReminderName();
+
+        timePickerInitialize();
+
+        dueDateCalculator();
+
+        setNotificationDropdown();
+
+        setLocationFeatureAttributes();
+
+        updateReminder();
+
+        deleteReminder();
+
     }
 
     private void setReminderName(){
         reminderName = findViewById(R.id.reminderNameEditPanel);
         reminderName.setText(tempReminder.getNameOfTheReminder());
-    }
-
-    private void setLocationFeatureAttributes(){
-        transitModes = findViewById(R.id.transitModesEditPanel);
-        scenarioCases = findViewById(R.id.Average_Worst_ScenarioEditPanel);
-        durationToDestination = findViewById(R.id.durationToDestinationEditPanel);
-        if (tempReminder.isLocationFeatureActive()){
-            timeForDirections.addAll(tempReminder.getTimeToGetToDestination());
-            durationToDestination.setText(timeForDirections.get(1));
-            radioGroupTransitModes();
-            setScenarioMode();
-        }else {
-            transitModes.setVisibility(View.GONE);
-            scenarioCases.setVisibility(View.GONE);
-            durationToDestination.setVisibility(View.GONE);
-        }
     }
 
     private void timePickerInitialize(){
@@ -124,24 +120,31 @@ public class EditingPanel extends AppCompatActivity {
         });
     }
 
+    private void setNotificationDropdown(){
+        notificationDropdown = findViewById(R.id.notificationSpinnerEditPanel);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.notification_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        notificationDropdown.setAdapter(adapter);
+        notificationDropdown.setSelection(0);
+    }
 
-    private void initializeFields() throws ParseException {
-        scrollView = findViewById(R.id.scrollViewEditPanel);
 
-        setReminderName();
 
-        timePickerInitialize();
-
-        dueDateCalculator();
-
-        setNotificationDropdown();
-
-        setLocationFeatureAttributes();
-
-        updateReminder();
-
-        deleteReminder();
-
+    private void setLocationFeatureAttributes(){
+        transitModes = findViewById(R.id.transitModesEditPanel);
+        scenarioCases = findViewById(R.id.Average_Worst_ScenarioEditPanel);
+        durationToDestination = findViewById(R.id.durationToDestinationEditPanel);
+        if (tempReminder.isLocationFeatureActive()){
+            timeForDirections.addAll(tempReminder.getTimeToGetToDestination());
+            durationToDestination.setText(timeForDirections.get(1));
+            radioGroupTransitModes();
+            setScenarioMode();
+        }else {
+            transitModes.setVisibility(View.GONE);
+            scenarioCases.setVisibility(View.GONE);
+            durationToDestination.setVisibility(View.GONE);
+        }
     }
 
     private void radioGroupTransitModes() {
@@ -205,12 +208,12 @@ public class EditingPanel extends AppCompatActivity {
     }
 
     private void deleteReminder(){
-        deleteReminder = findViewById(R.id.deleteReminder);
+        ImageButton deleteReminder = findViewById(R.id.deleteReminder);
         deleteReminder.setOnClickListener(v -> finishEdit("Delete", tempReminder));
     }
 
     private void updateReminder(){
-        updateReminder = findViewById(R.id.updateReminder);
+        ImageButton updateReminder = findViewById(R.id.updateReminder);
         updateReminder.setOnClickListener(v -> {
             if (reminderName.getText().toString().equals("")){
                 reminderName.setError("Empty Field");

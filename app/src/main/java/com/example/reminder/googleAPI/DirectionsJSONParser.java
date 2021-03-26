@@ -1,4 +1,4 @@
-package com.example.reminder;
+package com.example.reminder.googleAPI;
 
 import com.google.android.gms.maps.model.LatLng;
 

@@ -36,7 +36,31 @@ public class Reminder implements Parcelable {
         this.typeOfTransfer = typeOfTransfer;
     }
 
+    protected Reminder(Parcel in) {
+        id = in.readInt();
+        nameOfTheReminder = in.readString();
+        dateOfTheReminder = in.readString();
+        timeOfTheReminder = in.readString();
+        timeToGetToDestination = in.createStringArrayList();
+        timeToNotifyForTheReminder = in.readLong();
+        isLocationFeatureActive = in.readByte() != 0;
+        modelAverageOrWorse = in.readString();
+        typeOfTransfer = in.readString();
+    }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(nameOfTheReminder);
+        dest.writeString(dateOfTheReminder);
+        dest.writeString(timeOfTheReminder);
+        dest.writeStringList(timeToGetToDestination);
+        dest.writeLong(timeToNotifyForTheReminder);
+        dest.writeByte((byte) (isLocationFeatureActive ? 1 : 0));
+        dest.writeString(modelAverageOrWorse);
+        dest.writeString(typeOfTransfer);
+
+    }
 
     public static final Creator<Reminder> CREATOR = new Creator<Reminder>() {
         @Override
@@ -56,11 +80,11 @@ public class Reminder implements Parcelable {
         return nameOfTheReminder;
     }
 
+    public void setDateOfTheReminder(String dateOfTheReminder){ this.dateOfTheReminder = dateOfTheReminder; }
+
     public String getDateOfTheReminder() {
         return dateOfTheReminder;
     }
-
-    public void setDateOfTheReminder(String dateOfTheReminder){ this.dateOfTheReminder = dateOfTheReminder; }
 
     public void setTimeOfTheReminder(String timeOfTheReminder){ this.timeOfTheReminder = timeOfTheReminder;}
 
@@ -72,7 +96,6 @@ public class Reminder implements Parcelable {
         return timeToGetToDestination;
     }
 
-
     public long getTimeToNotifyForTheReminder() {
         return timeToNotifyForTheReminder;
     }
@@ -83,10 +106,6 @@ public class Reminder implements Parcelable {
 
     public boolean isLocationFeatureActive() {
         return isLocationFeatureActive;
-    }
-
-    public void setLocationFeatureActive(boolean locationFeatureActive) {
-        isLocationFeatureActive = locationFeatureActive;
     }
 
     public String getModelAverageOrWorse() {
@@ -113,31 +132,5 @@ public class Reminder implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
-    }
-
-    protected Reminder(Parcel in) {
-        id = in.readInt();
-        nameOfTheReminder = in.readString();
-        dateOfTheReminder = in.readString();
-        timeOfTheReminder = in.readString();
-        timeToGetToDestination = in.createStringArrayList();
-        timeToNotifyForTheReminder = in.readLong();
-        isLocationFeatureActive = in.readByte() != 0;
-        modelAverageOrWorse = in.readString();
-        typeOfTransfer = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(nameOfTheReminder);
-        dest.writeString(dateOfTheReminder);
-        dest.writeString(timeOfTheReminder);
-        dest.writeStringList(timeToGetToDestination);
-        dest.writeLong(timeToNotifyForTheReminder);
-        dest.writeByte((byte) (isLocationFeatureActive ? 1 : 0));
-        dest.writeString(modelAverageOrWorse);
-        dest.writeString(typeOfTransfer);
-
     }
 }

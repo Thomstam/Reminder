@@ -29,7 +29,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Reminder">
         <activity
-            android:name=".EditingPanel"
+            android:name=".formsPackage.EditingPanel"
             android:exported="true"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -47,10 +47,10 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".FormSetupActivity"
+            android:name=".formsPackage.FormSetupActivity"
             android:exported="true" />
         <activity
-            android:name=".DestinationActivity"
+            android:name=".googleAPI.DestinationActivity"
             android:exported="true" />
         <activity
             android:name=".MainActivity"

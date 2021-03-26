@@ -1,4 +1,4 @@
-package com.example.reminder;
+package com.example.reminder.googleAPI;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.reminder.R;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -95,37 +96,160 @@ public class DestinationActivity extends AppCompatActivity implements OnMapReady
         PlacesClient placesClient = Places.createClient(this);
 
         createLocationRequest();
+
         getLocationPermission();
+
         locationRepositioning();
+
         drawRoute();
+
         carDrawRouteSelected();
+
         walkingDrawRouteSelected();
+
         startingAutoCompleteFragment();
+
         destinationAutoCompleteFragment();
+
         doneButtonFinish();
     }
 
+    protected void createLocationRequest() {
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
 
-    private void initializeMap() {
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        assert mapFragment != null;
-        mapFragment.getMapAsync(this);
+        SettingsClient client = LocationServices.getSettingsClient(this);
+        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
+        task.addOnSuccessListener(this, locationSettingsResponse -> gpsIsEnabled("Yes"));
+
+        task.addOnFailureListener(this, e -> {
+            if (e instanceof ResolvableApiException) {
+                try {
+                    ResolvableApiException resolvable = (ResolvableApiException) e;
+                    resolvable.startResolutionForResult(DestinationActivity.this,
+                            REQUEST_CHECK_SETTINGS);
+
+                    gpsIsEnabled("No");
+                } catch (IntentSender.SendIntentException sendEx) {
+                    // Ignore the error.
+                }
+            }
+        });
+    }
+
+    private void getLocationPermission() {
+        String[] permissions = {FINE_LOCATION, COURSE_LOCATION};
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this.getApplicationContext(), COURSE_LOCATION) ==
+                    PackageManager.PERMISSION_GRANTED) {
+                locationPermissionGranted = true;
+                initializeMap();
+            } else {
+                ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_CODE);
+            }
+
+        } else {
+            ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_CODE);
+        }
+    }
+
+    private void getDeviceLocation() {
+        FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        try {
+            if (locationPermissionGranted) {
+                Task<Location> location = fusedLocationProviderClient.getLastLocation();
+                location.addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Location currentLocation = task.getResult();
+                        if (currentLocation != null) {
+                            startingPoint = mMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
+                                    .title("MyLocation"));
+                            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
+                            startingPoint.setVisible(false);
+                        }
+                    } else {
+                        Toast.makeText(DestinationActivity.this, "cant find location", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void locationRepositioning() {
+        ImageButton currentLocation = findViewById(R.id.currentLocation);
+        currentLocation.setOnClickListener(v -> {
+            createLocationRequest();
+            if (gpsLocationGranted) {
+                getDeviceLocation();
+            }
+        });
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        if (locationPermissionGranted) {
-            getDeviceLocation();
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        locationPermissionGranted = false;
+        if (requestCode == LOCATION_PERMISSION_CODE) {
+            if (grantResults.length > 0) {
+                for (int grantResult : grantResults) {
+                    if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                        locationPermissionGranted = false;
+                        return;
+                    }
+                }
+                locationPermissionGranted = true;
+                initializeMap();
             }
-
-            mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            startingPointSearchbar.setText("Current Location");
         }
+    }
+
+    private void drawRoute() {
+        Button getDirectionButton = findViewById(R.id.getDirectionsButton);
+        getDirectionButton.setOnClickListener(v -> {
+            if (startingPoint != null) {
+                if (destinationPoint != null) {
+                    timeDirectionsNeeds.clear();
+                    String tempPessimistDriving = getUrl(startingPoint.getPosition(), destinationPoint.getPosition(), "driving", "pessimistic");
+                    String tempOptimistDriving = getUrl(startingPoint.getPosition(), destinationPoint.getPosition(), "driving", "optimistic");
+                    String tempOptimistWalking = getUrl(startingPoint.getPosition(), destinationPoint.getPosition(), "walking", "optimistic");
+                    DownloadTask walking = new DownloadTask();
+                    DownloadTask pessimistDriving = new DownloadTask();
+                    DownloadTask optimistDriving = new DownloadTask();
+                    walking.execute(tempOptimistWalking);
+                    pessimistDriving.execute(tempPessimistDriving);
+                    optimistDriving.execute(tempOptimistDriving);
+                } else {
+                    Toast.makeText(this, "Set Destination Place", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(this, "Set Starting Point", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void carDrawRouteSelected() {
+        RadioButton carDirectionsDrawRoute = findViewById(R.id.carDirections);
+        carDirectionsDrawRoute.setOnClickListener(v -> {
+            String tempOptimistDriving = getUrl(startingPoint.getPosition(), destinationPoint.getPosition(), "driving", "pessimistic");
+            DownloadTask walking = new DownloadTask();
+            walking.execute(tempOptimistDriving);
+        });
+    }
+
+    private void walkingDrawRouteSelected() {
+        RadioButton walkingDirectionDrawRoute = findViewById(R.id.walkDirections);
+        walkingDirectionDrawRoute.setOnClickListener(v -> {
+            String tempOptimistWalking = getUrl(startingPoint.getPosition(), destinationPoint.getPosition(), "walking", "optimistic");
+            DownloadTask driving = new DownloadTask();
+            driving.execute(tempOptimistWalking);
+        });
     }
 
     private void startingAutoCompleteFragment() {
@@ -177,62 +301,24 @@ public class DestinationActivity extends AppCompatActivity implements OnMapReady
         });
     }
 
-    private void getDeviceLocation() {
-        FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        try {
-            if (locationPermissionGranted) {
-                Task<Location> location = fusedLocationProviderClient.getLastLocation();
-                location.addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Location currentLocation = task.getResult();
-                        if (currentLocation != null) {
-                            startingPoint = mMap.addMarker(new MarkerOptions()
-                                    .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
-                                    .title("MyLocation"));
-                            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
-                            startingPoint.setVisible(false);
-                        }
-                    } else {
-                        Toast.makeText(DestinationActivity.this, "cant find location", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void getLocationPermission() {
-        String[] permissions = {FINE_LOCATION, COURSE_LOCATION};
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED) {
-            if (ContextCompat.checkSelfPermission(this.getApplicationContext(), COURSE_LOCATION) ==
-                    PackageManager.PERMISSION_GRANTED) {
-                locationPermissionGranted = true;
-                initializeMap();
-            } else {
-                ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_CODE);
-            }
-
-        } else {
-            ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_CODE);
-        }
+    private void initializeMap() {
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        assert mapFragment != null;
+        mapFragment.getMapAsync(this);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        locationPermissionGranted = false;
-        if (requestCode == LOCATION_PERMISSION_CODE) {
-            if (grantResults.length > 0) {
-                for (int grantResult : grantResults) {
-                    if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                        locationPermissionGranted = false;
-                        return;
-                    }
-                }
-                locationPermissionGranted = true;
-                initializeMap();
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        if (locationPermissionGranted) {
+            getDeviceLocation();
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
             }
+            mMap.setMyLocationEnabled(true);
+            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+            startingPointSearchbar.setText("Current Location");
         }
     }
 
@@ -240,68 +326,11 @@ public class DestinationActivity extends AppCompatActivity implements OnMapReady
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, DestinationActivity.DEFAULT_ZOOM));
     }
 
-    public void locationRepositioning() {
-        ImageButton currentLocation = findViewById(R.id.currentLocation);
-        currentLocation.setOnClickListener(v -> {
-            createLocationRequest();
-            if (gpsLocationGranted) {
-                getDeviceLocation();
-            }
-        });
-    }
-
-    protected void createLocationRequest() {
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(5000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest);
-
-// ...
-
-        SettingsClient client = LocationServices.getSettingsClient(this);
-        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
-        task.addOnSuccessListener(this, locationSettingsResponse -> gpsIsEnabled("Yes"));
-
-        task.addOnFailureListener(this, e -> {
-            if (e instanceof ResolvableApiException) {
-                try {
-                    ResolvableApiException resolvable = (ResolvableApiException) e;
-                    resolvable.startResolutionForResult(DestinationActivity.this,
-                            REQUEST_CHECK_SETTINGS);
-
-                    gpsIsEnabled("No");
-                } catch (IntentSender.SendIntentException sendEx) {
-                    // Ignore the error.
-                }
-            }
-        });
-    }
-
     private void gpsIsEnabled(String answer) {
         gpsLocationGranted = answer.equals("Yes");
     }
 
-    private void carDrawRouteSelected() {
-        RadioButton carDirectionsDrawRoute = findViewById(R.id.carDirections);
-        carDirectionsDrawRoute.setOnClickListener(v -> {
-            String tempOptimistDriving = getUrl(startingPoint.getPosition(), destinationPoint.getPosition(), "driving", "pessimistic");
-            DownloadTask walking = new DownloadTask();
-            walking.execute(tempOptimistDriving);
-        });
-    }
-
-    private void walkingDrawRouteSelected() {
-        RadioButton walkingDirectionDrawRoute = findViewById(R.id.walkDirections);
-        walkingDirectionDrawRoute.setOnClickListener(v -> {
-            String tempOptimistWalking = getUrl(startingPoint.getPosition(), destinationPoint.getPosition(), "walking", "optimistic");
-            DownloadTask driving = new DownloadTask();
-            driving.execute(tempOptimistWalking);
-        });
-    }
-
-    private void doneButtonFinish(){
+    private void doneButtonFinish() {
         doneButton = findViewById(R.id.doneButton);
         doneButton.setOnClickListener(v -> {
             Intent intent = new Intent();
@@ -317,34 +346,14 @@ public class DestinationActivity extends AppCompatActivity implements OnMapReady
         String mode = "mode=" + modeToAdd;
         String model = "traffic_model=" + trafficModel;
         String departureTime = "departure_time=" + departureTimeInUTC;
-        String parameters = str_origin + "&" + str_dest + "&" + departureTime +"&" + mode + "&" + model;
+        String parameters = str_origin + "&" + str_dest + "&" + departureTime + "&" + mode + "&" + model;
         String output = "json";
         return "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + apiKey;
     }
 
-    private void drawRoute() {
-        Button getDirectionButton = findViewById(R.id.getDirectionsButton);
-        getDirectionButton.setOnClickListener(v -> {
-            if (startingPoint != null) {
-                if (destinationPoint != null) {
-                    timeDirectionsNeeds.clear();
-                    String tempPessimistDriving = getUrl(startingPoint.getPosition(), destinationPoint.getPosition(), "driving", "pessimistic");
-                    String tempOptimistDriving = getUrl(startingPoint.getPosition(), destinationPoint.getPosition(), "driving", "optimistic");
-                    String tempOptimistWalking = getUrl(startingPoint.getPosition(), destinationPoint.getPosition(), "walking", "optimistic");
-                    DownloadTask walking = new DownloadTask();
-                    DownloadTask pessimistDriving = new DownloadTask();
-                    DownloadTask optimistDriving = new DownloadTask();
-                    walking.execute(tempOptimistWalking);
-                    pessimistDriving.execute(tempPessimistDriving);
-                    optimistDriving.execute(tempOptimistDriving);
-                } else {
-                    Toast.makeText(this, "Set Destination Place", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(this, "Set Starting Point", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+
+
+
 
     private String downloadUrl(String strUrl) throws IOException {
         String data = "";
@@ -418,7 +427,7 @@ public class DestinationActivity extends AppCompatActivity implements OnMapReady
     }
 
     @SuppressLint("StaticFieldLeak")
-    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String,String>>> > {
+    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
 
         // Parsing the data in non-ui thread
         @Override

@@ -10,8 +10,8 @@ import java.util.List;
 
 public class ReminderRepository {
 
-    private ReminderDao reminderDao;
-    private LiveData<List<Reminder>> reminders;
+    private final ReminderDao reminderDao;
+    private final LiveData<List<Reminder>> reminders;
 
     public ReminderRepository(Application application) {
         ReminderDataBase reminderDataBase = ReminderDataBase.getINSTANCE(application);
@@ -52,7 +52,7 @@ public class ReminderRepository {
     }
 
     private void deleteAllRemindersTask(){
-        new Thread(() -> reminderDao.nukeTable()).start();
+        new Thread(reminderDao::nukeTable).start();
     }
 
 

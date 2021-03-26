@@ -14,8 +14,8 @@ import java.util.List;
 
 public class ReminderViewModel extends AndroidViewModel {
 
-    private ReminderRepository reminderRepository;
-    private LiveData<List<Reminder>> reminders;
+    private final ReminderRepository reminderRepository;
+    private final LiveData<List<Reminder>> reminders;
 
      public ReminderViewModel(@NonNull @NotNull Application application) {
         super(application);
