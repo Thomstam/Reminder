@@ -47,6 +47,10 @@
             android:value="@string/google_maps_key" />
 
         <activity
+            android:name=".MapsActivityvn"
+            android:exported="true"
+            android:label="@string/title_activity_maps_activityvn"></activity>
+        <activity
             android:name=".formsPackage.EditingPanel"
             android:exported="true" />
 
