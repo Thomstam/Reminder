@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 import com.example.reminder.Reminder;
 
-@Database(entities = {Reminder.class}, version = 1, exportSchema = false)
+@Database(entities = {Reminder.class}, version = 2, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class ReminderDataBase extends RoomDatabase {
 

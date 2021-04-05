@@ -28,5 +28,12 @@ public interface ReminderDao {
     @Query("SELECT * FROM Reminder ORDER BY id DESC")
     LiveData<List<Reminder>> getAllReminders();
 
+    @Query("SELECT * FROM Reminder WHERE isCompleted = 1 ORDER BY id DESC")
+    LiveData<List<Reminder>> selectCompletedReminders();
 
+    @Query("SELECT * FROM Reminder WHERE isCompleted = 0 ORDER BY id DESC")
+    LiveData<List<Reminder>> selectCurrentReminders();
+
+    @Query("UPDATE Reminder SET isCompleted = 1 WHERE strftime('%s', 'now') * 1000 > timeOfTheEvent")
+    void updateTable();
 }

@@ -57,6 +57,7 @@ public class FormSetupActivity extends AppCompatActivity {
     private String trafficModel;
     private String typeOfTransfer;
     private Calendar calendar;
+    private long timeOfTheEvent;
 
 
 
@@ -167,6 +168,7 @@ public class FormSetupActivity extends AppCompatActivity {
         return strDate.getTime() + dueTime.getCurrentHour() * 3600000 + dueTime.getCurrentMinute() * 60000 - TimeZone.getDefault().getRawOffset();
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -244,7 +246,8 @@ public class FormSetupActivity extends AppCompatActivity {
                     scrollView.scrollTo(mapsButton.getScrollX(), mapsButton.getScrollY());
                     return;
                 }else if (System.currentTimeMillis() >= notificationTimeInMilsCalculator(notificationDropdown.getSelectedItem().toString()) - notificationIncludingDistanceCalculation(durationToDestination.getText().toString())){
-                    Toast.makeText(this, "Time to destination plus notification time points to time that have passed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Time to destination plus notification time points to time that have passed", Toast.LENGTH_LONG).show();
+                    return;
                 }
             }else{
                 if (System.currentTimeMillis() >= notificationTimeInMilsCalculator(notificationDropdown.getSelectedItem().toString())){
@@ -257,11 +260,15 @@ public class FormSetupActivity extends AppCompatActivity {
             long timeToNotifyTheUser;
             @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d", dueTime.getCurrentHour(), dueTime.getCurrentMinute());
             if (locationFeatureSwitch.isChecked()){
+                if (trafficModel == null || typeOfTransfer == null){
+                    trafficModel = "Average";
+                    typeOfTransfer = "Driving";
+                }
                 timeToNotifyTheUser = notificationTimeInMilsCalculator(notificationDropdown.getSelectedItem().toString()) - notificationIncludingDistanceCalculation(durationToDestination.getText().toString());
-                reminder = new Reminder(reminderName.getText().toString(), dayPicked, time, timeForDirections, timeToNotifyTheUser, true, trafficModel, typeOfTransfer );
+                reminder = new Reminder(reminderName.getText().toString(), dayPicked, time, timeForDirections, timeToNotifyTheUser, true, trafficModel, typeOfTransfer, timeOfTheEvent, false);
             }else {
                 timeToNotifyTheUser = notificationTimeInMilsCalculator(notificationDropdown.getSelectedItem().toString());
-                reminder = new Reminder(reminderName.getText().toString(), dayPicked, time, timeForDirections, timeToNotifyTheUser, false, "", "");
+                reminder = new Reminder(reminderName.getText().toString(), dayPicked, time, timeForDirections, timeToNotifyTheUser, false, "", "", timeOfTheEvent, false);
             }
             Intent intent = new Intent();
             intent.putExtra("Reminder", reminder);
@@ -279,7 +286,8 @@ public class FormSetupActivity extends AppCompatActivity {
         }else {
             timeForNotificationToSubtract = Long.parseLong(split[0]) * 60000;
         }
-        return strDate.getTime() + dueTime.getCurrentHour() * 3600000 + dueTime.getCurrentMinute() * 60000 - timeForNotificationToSubtract;
+        timeOfTheEvent = strDate.getTime() + dueTime.getCurrentHour() * 3600000 + dueTime.getCurrentMinute() * 60000;
+        return  timeOfTheEvent - timeForNotificationToSubtract;
     }
 
     private long notificationIncludingDistanceCalculation(String text){

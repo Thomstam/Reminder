@@ -1,0 +1,57 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/halfStandardMargin">
+
+    <TextView
+        android:id="@+id/nameOfNotificationLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="11sp"
+        android:text="Doctor"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/notificationTimeLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="11sp"
+        android:text="13:22"
+        android:layout_below="@+id/nameOfNotificationLarge"
+        android:layout_marginTop="@dimen/standardMargin"
+        tools:ignore="HardcodedText" />
+
+    <ImageView
+        android:id="@+id/notification_transferType"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/car_direction_icon"
+        android:layout_alignParentEnd="true"
+        android:contentDescription= "transferIcon"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/notificationTimeToDestination"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="15 hours and 12 minutes"
+        android:textSize="11sp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/notification_transferType"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/notificationCaseScenario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="11sp"
+        android:text="Average"
+        android:layout_toStartOf="@+id/notification_transferType"
+        android:layout_marginEnd="@dimen/standardMargin"
+        tools:ignore="HardcodedText" />
+
+
+</RelativeLayout>

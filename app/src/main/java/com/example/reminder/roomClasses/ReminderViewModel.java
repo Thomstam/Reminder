@@ -1,7 +1,6 @@
 package com.example.reminder.roomClasses;
 
 import android.app.Application;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -13,30 +12,48 @@ public class ReminderViewModel extends AndroidViewModel {
 
     private final ReminderRepository reminderRepository;
     private final LiveData<List<Reminder>> reminders;
+    private final LiveData<List<Reminder>> selectCurrentReminders;
+    private final LiveData<List<Reminder>> selectCompletedReminders;
 
-     public ReminderViewModel(@NonNull @NotNull Application application) {
+    public ReminderViewModel(@NonNull @NotNull Application application) {
         super(application);
         reminderRepository = new ReminderRepository(application);
         reminders = reminderRepository.getAllReminders();
+        selectCurrentReminders = reminderRepository.getCurrentReminders();
+        selectCompletedReminders = reminderRepository.getCompletedReminders();
     }
 
-    public void insert(Reminder reminder){
-         reminderRepository.insert(reminder);
+    public void insert(Reminder reminder) {
+        reminderRepository.insert(reminder);
     }
 
-    public void update(Reminder reminder){
+    public void update(Reminder reminder) {
         reminderRepository.update(reminder);
     }
 
-    public void delete(Reminder reminder){
+    public void delete(Reminder reminder) {
         reminderRepository.delete(reminder);
     }
 
-    public void deleteAllReminders(){
+    public void deleteAllReminders() {
         reminderRepository.deleteAllReminders();
     }
 
-    public LiveData<List<Reminder>> getReminders(){
-         return reminders;
+    public LiveData<List<Reminder>> getReminders() {
+        return reminders;
     }
+
+    public LiveData<List<Reminder>> getSelectCurrentReminders() {
+        return selectCurrentReminders;
+    }
+
+    public LiveData<List<Reminder>> getSelectCompletedReminders() {
+        return selectCompletedReminders;
+    }
+
+
+    public void updateTable() {
+        reminderRepository.updateTable();
+    }
+
 }

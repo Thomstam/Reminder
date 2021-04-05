@@ -4,14 +4,33 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/notificationFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/mainToolBar"
+        android:layout_marginTop="@dimen/standardMargin"
+        android:layout_marginEnd="@dimen/standardMargin"
+        android:name="com.example.reminder.NotificationPanel" />
 
 
     <Toolbar
-        android:id="@+id/toolBarMain"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:background="@color/design_default_color_primary"
+        android:id="@+id/mainToolBar">
+
+        <Spinner
+            android:id="@+id/sqlQueries"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            tools:ignore="SpeakableTextPresentCheck" />
+    </Toolbar>
+
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -31,11 +50,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/createNewReminder"
-        android:layout_marginBottom="@dimen/halfStandardMargin"
+        android:layout_marginBottom="@dimen/standardMargin"
         android:layout_marginTop="@dimen/halfStandardMargin"
         android:layout_marginEnd="@dimen/halfStandardMargin"
         android:layout_marginStart="@dimen/halfStandardMargin"
-        android:layout_below="@id/toolBarMain"
+        android:layout_below="@+id/mainToolBar"
         tools:ignore="SpeakableTextPresentCheck">
 
         <androidx.recyclerview.widget.RecyclerView

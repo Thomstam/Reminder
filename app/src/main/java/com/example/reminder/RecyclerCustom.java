@@ -41,24 +41,21 @@ public class RecyclerCustom extends RecyclerView.Adapter<RecyclerCustom.Reminder
         if (reminderList.get(position).isLocationFeatureActive()) {
             if (reminderList.get(position).getTypeOfTransfer().equals("Walking")) {
                 holder.transitIcon.setImageResource(R.drawable.walk_directions_icon);
+                holder.timeToDestination.setText(reminderList.get(position).getTimeToGetToDestination().get(0));
             } else {
                 holder.transitIcon.setImageResource(R.drawable.car_direction_icon);
+                if (reminderList.get(position).getModelAverageOrWorse().equals("Average")){
+                    holder.timeToDestination.setText(reminderList.get(position).getTimeToGetToDestination().get(1));
+                }else {
+                    holder.timeToDestination.setText(reminderList.get(position).getTimeToGetToDestination().get(2));
+                }
             }
             holder.trafficModel.setText(reminderList.get(position).getModelAverageOrWorse());
-            if (reminderList.get(position).getTypeOfTransfer().equals("Walking")) {
-                holder.timeToDestination.setText(reminderList.get(position).getTimeToGetToDestination().get(0));
-            } else if (reminderList.get(position).getModelAverageOrWorse().equals("Average")) {
-                holder.timeToDestination.setText(reminderList.get(position).getTimeToGetToDestination().get(1));
-            } else {
-                holder.timeToDestination.setText(reminderList.get(position).getTimeToGetToDestination().get(2));
-            }
         } else {
             holder.transitIcon.setVisibility(View.GONE);
             holder.trafficModel.setVisibility(View.GONE);
             holder.timeToDestination.setVisibility(View.GONE);
         }
-
-
     }
 
     @Override
