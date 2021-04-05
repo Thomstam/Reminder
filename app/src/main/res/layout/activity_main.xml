@@ -14,7 +14,8 @@
         android:layout_below="@+id/mainToolBar"
         android:layout_marginTop="@dimen/standardMargin"
         android:layout_marginEnd="@dimen/standardMargin"
-        android:name="com.example.reminder.NotificationPanel" />
+        android:name="com.example.reminder.NotificationPanel"
+        android:visibility="gone"/>
 
 
     <Toolbar

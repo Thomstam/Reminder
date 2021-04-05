@@ -15,6 +15,7 @@ import android.widget.RemoteViews;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.Toolbar;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +24,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.reminder.formsPackage.EditingPanel;
 import com.example.reminder.formsPackage.FormSetupActivity;
 import com.example.reminder.roomClasses.ReminderViewModel;
@@ -89,9 +91,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0){
-                    reminderViewModel.getSelectCurrentReminders().observe(MainActivity.this, reminderList1 -> recyclerCustom.setReminderList(reminderList1));
+                    reminderViewModel.getSelectCurrentReminders().observe(MainActivity.this, reminders -> recyclerCustom.setReminderList(reminders));
                 }else if (position == 1){
-                    reminderViewModel.getSelectCompletedReminders().observe(MainActivity.this, reminderList2 -> recyclerCustom.setReminderList(reminderList2));
+                    reminderViewModel.getSelectCompletedReminders().observe(MainActivity.this, reminders -> recyclerCustom.setReminderList(reminders));
+                    notificationFragment();
                 }else {
                     reminderViewModel.getReminders().observe(MainActivity.this, reminders -> recyclerCustom.setReminderList(reminders));
                 }
@@ -114,8 +117,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(recyclerCustom);
     }
 
-
-
     private void setTheViewModel() {
         reminderViewModel = ViewModelProviders.of(this).get(ReminderViewModel.class);
         reminderViewModel.updateTable();
@@ -131,7 +132,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void notificationFragment(){
-        getSupportFragmentManager().beginTransaction().replace(R.id.notificationFragment, NotificationPanel.class, null).commit();
+//        if (findViewById(R.id.notificationFragment) != null){
+//            if (savedInstanceState != null){
+//
+//            }
+//        }
+//        getSupportFragmentManager().beginTransaction().replace(R.id.notificationFragment, NotificationPanel.class, null).commit();
     }
 
     private void recyclerOnClick() {
@@ -168,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 
     private void scheduleNotification(Notification notification, long delay) {
         Intent notificationIntent = new Intent(this, NotificationReceiver.class);
@@ -218,6 +223,4 @@ public class MainActivity extends AppCompatActivity {
             remoteViewsLarge.setTextViewText(R.id.notificationTimeToDestination, reminder.getTimeToGetToDestination().get(2));
         }
     }
-
-
 }

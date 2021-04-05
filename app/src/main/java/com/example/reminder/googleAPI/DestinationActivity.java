@@ -111,7 +111,7 @@ public class DestinationActivity extends AppCompatActivity implements OnMapReady
         timeDirectionsNeeds = new ArrayList<>();
         Bundle bundle = getIntent().getExtras();
         departureTimeInUTC = bundle.getString("TimeInUTC");
-        apiKey = getString(R.string.googleApi);
+        apiKey = getString(R.string.google_maps_key);
         Places.initialize(getApplicationContext(), apiKey);
         PlacesClient placesClient = Places.createClient(this);
     }
@@ -197,6 +197,7 @@ public class DestinationActivity extends AppCompatActivity implements OnMapReady
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         locationPermissionGranted = false;
         if (requestCode == LOCATION_PERMISSION_CODE) {
             if (grantResults.length > 0) {
