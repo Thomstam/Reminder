@@ -2,16 +2,11 @@ package com.example.reminder;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.RemoteViews;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -19,7 +14,6 @@ import android.widget.Toolbar;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,13 +27,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerCustom recyclerCustom;
+
     private static final int REQUEST_CODE_FOR_NEW_REMINDER = 666;
     private static final int REQUEST_CODE_FOR_EDIT_PANEL = 555;
-    private ReminderViewModel reminderViewModel;
+    private ReminderViewModel reminderViewModelCurrent;
+    private ReminderViewModel reminderViewModelCompleted;
+    private ReminderViewModel reminderViewModelAll;
     public static final String NOTIFICATION_CHANNEL_ID = "10001";
-    private final static String default_notification_channel_id = "default";
-    private RemoteViews remoteViewsSmall;
-    private RemoteViews remoteViewsLarge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,18 +61,23 @@ public class MainActivity extends AppCompatActivity {
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle("DELETE ALL REMINDERS")
                         .setMessage("CAUTION: Are you sure you want to delete all the reminders?")
-                        .setPositiveButton(android.R.string.yes, (dialog, which) -> reminderViewModel.deleteAllReminders())
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> reminderViewModelCurrent.deleteAllReminders())
                         .setNegativeButton(android.R.string.no, null)
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
             } else if (item.getItemId() == R.id.notificationSettings) {
                 Toast.makeText(MainActivity.this, "Jump To Notification Settings", Toast.LENGTH_SHORT).show();
-//                notificationFragment();
+                notificationFragment();
             } else if (item.getItemId() == R.id.about) {
                 Toast.makeText(MainActivity.this, "Jump to about fragment", Toast.LENGTH_SHORT).show();
             }
             return false;
         });
+    }
+
+    private void notificationFragment(){
+        Intent intent = new Intent(MainActivity.this , SettingsActivity.class);
+        startActivity(intent);
     }
 
     private void setSpinnerMenu(){
@@ -91,22 +90,38 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0){
-                    reminderViewModel.getSelectCurrentReminders().observe(MainActivity.this, reminders -> recyclerCustom.setReminderList(reminders));
+                    if (reminderViewModelAll.getReminders().hasActiveObservers()){
+                        reminderViewModelAll.getReminders().removeObservers(MainActivity.this);
+                    }
+                    if (reminderViewModelCompleted.getSelectCompletedReminders().hasActiveObservers()){
+                        reminderViewModelAll.getSelectCompletedReminders().removeObservers(MainActivity.this);
+                    }
+                    reminderViewModelCurrent.getSelectCurrentReminders().observe(MainActivity.this, reminders -> recyclerCustom.setReminderList(reminders));
                 }else if (position == 1){
-                    reminderViewModel.getSelectCompletedReminders().observe(MainActivity.this, reminders -> recyclerCustom.setReminderList(reminders));
-                    notificationFragment();
+                    if (reminderViewModelAll.getReminders().hasActiveObservers()){
+                        reminderViewModelAll.getReminders().removeObservers(MainActivity.this);
+                    }
+                    if (reminderViewModelCurrent.getSelectCurrentReminders().hasActiveObservers()){
+                        reminderViewModelCurrent.getSelectCurrentReminders().removeObservers(MainActivity.this);
+                    }
+                    reminderViewModelCompleted.getSelectCompletedReminders().observe(MainActivity.this, reminders -> recyclerCustom.setReminderList(reminders));
                 }else {
-                    reminderViewModel.getReminders().observe(MainActivity.this, reminders -> recyclerCustom.setReminderList(reminders));
+                    if (reminderViewModelCurrent.getSelectCurrentReminders().hasActiveObservers()){
+                        reminderViewModelCurrent.getSelectCurrentReminders().removeObservers(MainActivity.this);
+                    }
+                    if (reminderViewModelCompleted.getSelectCompletedReminders().hasActiveObservers()){
+                        reminderViewModelAll.getSelectCompletedReminders().removeObservers(MainActivity.this);
+                    }
+                    reminderViewModelAll.getReminders().observe(MainActivity.this, reminders -> recyclerCustom.setReminderList(reminders));
                 }
             }
-
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
     }
+
 
     private void setRecyclerCustom() {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -118,9 +133,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setTheViewModel() {
-        reminderViewModel = ViewModelProviders.of(this).get(ReminderViewModel.class);
-        reminderViewModel.updateTable();
-        reminderViewModel.getSelectCurrentReminders().observe(this, reminders -> recyclerCustom.setReminderList(reminders));
+        reminderViewModelCurrent = ViewModelProviders.of(this).get(ReminderViewModel.class);
+        reminderViewModelCompleted = ViewModelProviders.of(this).get(ReminderViewModel.class);
+        reminderViewModelAll = ViewModelProviders.of(this).get(ReminderViewModel.class);
+        reminderViewModelCurrent.updateTable();
+
+
     }
 
     public void createNewReminderForm() {
@@ -131,14 +149,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void notificationFragment(){
-//        if (findViewById(R.id.notificationFragment) != null){
-//            if (savedInstanceState != null){
-//
-//            }
-//        }
-//        getSupportFragmentManager().beginTransaction().replace(R.id.notificationFragment, NotificationPanel.class, null).commit();
-    }
 
     private void recyclerOnClick() {
         recyclerCustom.setOnItemClickListener(reminder -> {
@@ -156,8 +166,9 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 assert data != null;
                 Reminder reminder = (Reminder) data.getExtras().get("Reminder");
-                reminderViewModel.insert(reminder);
-                scheduleNotification(getNotification(reminder), reminder.getTimeToNotifyForTheReminder());
+                reminderViewModelCurrent.insert(reminder);
+                SettingsActivity notification = new SettingsActivity();
+                notification.scheduleNotification(notification.getNotification(reminder), reminder.getTimeToNotifyForTheReminder());
             }
         }
         if (requestCode == REQUEST_CODE_FOR_EDIT_PANEL) {
@@ -166,61 +177,12 @@ public class MainActivity extends AppCompatActivity {
                 String query = (String) data.getExtras().get("QueryToExecute");
                 Reminder reminder = (Reminder) data.getExtras().get("Reminder");
                 if (query.equals("Delete")) {
-                    reminderViewModel.delete(reminder);
+                    reminderViewModelCurrent.delete(reminder);
                 } else {
-                    reminderViewModel.update(reminder);
+                    reminderViewModelCurrent.update(reminder);
                 }
                 recyclerCustom.notifyDataSetChanged();
             }
-        }
-    }
-
-    private void scheduleNotification(Notification notification, long delay) {
-        Intent notificationIntent = new Intent(this, NotificationReceiver.class);
-        notificationIntent.putExtra(NotificationReceiver.NOTIFICATION_ID, 1);
-        notificationIntent.putExtra(NotificationReceiver.NOTIFICATION, notification);
-        @SuppressLint("UnspecifiedImmutableFlag") PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        assert alarmManager != null;
-        alarmManager.set(AlarmManager.RTC_WAKEUP, delay, pendingIntent);
-    }
-
-    private Notification getNotification(Reminder reminder) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, default_notification_channel_id);
-        builder.setContentTitle("Time To Start Getting Ready");
-        builder.setSmallIcon(R.drawable.ic_notification_alert);
-        setRemoteViewsSmall(reminder);
-        builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle());
-        builder.setCustomContentView(remoteViewsSmall);
-        if (reminder.isLocationFeatureActive()){
-            setRemoteViewsLarge(reminder);
-            builder.setCustomBigContentView(remoteViewsLarge);
-        }
-        builder.setAutoCancel(true);
-        builder.setChannelId(NOTIFICATION_CHANNEL_ID);
-        return builder.build();
-    }
-
-    private void setRemoteViewsSmall(Reminder reminder) {
-        remoteViewsSmall = new RemoteViews(getPackageName(), R.layout.notification_small);
-        remoteViewsSmall.setTextViewText(R.id.nameOfNotificationSmall, reminder.getNameOfTheReminder());
-        remoteViewsSmall.setTextViewText(R.id.notificationTimeSmall, reminder.getTimeOfTheReminder());
-    }
-
-    private void setRemoteViewsLarge(Reminder reminder) {
-        remoteViewsLarge = new RemoteViews(getPackageName(), R.layout.notification_large);
-        remoteViewsLarge.setTextViewText(R.id.nameOfNotificationLarge, reminder.getNameOfTheReminder());
-        remoteViewsLarge.setTextViewText(R.id.notificationTimeLarge, reminder.getTimeOfTheReminder());
-        remoteViewsLarge.setTextViewText(R.id.notificationCaseScenario, reminder.getModelAverageOrWorse());
-        if (reminder.getTypeOfTransfer().equals("Walking")){
-            remoteViewsLarge.setImageViewResource(R.id.notification_transferType, R.drawable.walk_directions_icon);
-            remoteViewsLarge.setTextViewText(R.id.notificationTimeToDestination, reminder.getTimeToGetToDestination().get(0));
-        }else if (reminder.getModelAverageOrWorse().equals("Average")){
-            remoteViewsLarge.setImageViewResource(R.id.notification_transferType, R.drawable.car_direction_icon);
-            remoteViewsLarge.setTextViewText(R.id.notificationTimeToDestination, reminder.getTimeToGetToDestination().get(1));
-        }else {
-            remoteViewsLarge.setImageViewResource(R.id.notification_transferType, R.drawable.car_direction_icon);
-            remoteViewsLarge.setTextViewText(R.id.notificationTimeToDestination, reminder.getTimeToGetToDestination().get(2));
         }
     }
 }

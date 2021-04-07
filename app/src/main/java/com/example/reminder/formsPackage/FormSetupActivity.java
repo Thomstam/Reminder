@@ -17,13 +17,16 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.reminder.R;
 import com.example.reminder.Reminder;
 import com.example.reminder.googleAPI.DestinationActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,42 +62,33 @@ public class FormSetupActivity extends AppCompatActivity {
     private Calendar calendar;
     private long timeOfTheEvent;
 
-
-
     @Override
-    protected void onCreate(Bundle savedInstanceState)  {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_setup);
-        reminderName = findViewById(R.id.reminderName);
-        scenarioCases = findViewById(R.id.Average_Worst_Scenario);
-        transitModes = findViewById(R.id.transitModes);
-        durationToDestination = findViewById(R.id.durationToDestination);
-        notificationDropdown = findViewById(R.id.notificationSpinner);
-        dueTime = findViewById(R.id.dueTime);
-        scrollView = findViewById(R.id.scrollView);
 
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.notification_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        notificationDropdown.setAdapter(adapter);
-        dueTime.setIs24HourView(true);
-
-
-        if (!isServicesUpdated()){
+        if (!isServicesUpdated()) {
             locationFeatureSwitch.setVisibility(View.GONE);
         }
+
+        idsDeclaration();
+
         radioGroupTransitModes();
+
         setScenarioMode();
+
         dueDateCalculator();
+
         switchCheck();
+
         openGoogleMaps();
+
         completeReminder();
 
-        dueDate.setDate(System.currentTimeMillis());
-        calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        dayPicked = sdf.format(calendar.getTime());
+        setNotificationDropdown();
+
+        setDayPicked();
+
         try {
             strDate = sdf.parse(dayPicked);
         } catch (ParseException e) {
@@ -102,7 +96,34 @@ public class FormSetupActivity extends AppCompatActivity {
         }
     }
 
-    private void switchCheck(){
+    private void idsDeclaration() {
+        reminderName = findViewById(R.id.reminderName);
+        scenarioCases = findViewById(R.id.Average_Worst_Scenario);
+        transitModes = findViewById(R.id.transitModes);
+        durationToDestination = findViewById(R.id.durationToDestination);
+        notificationDropdown = findViewById(R.id.notificationSpinner);
+        dueTime = findViewById(R.id.dueTime);
+        dueTime.setIs24HourView(true);
+        scrollView = findViewById(R.id.scrollView);
+
+    }
+
+    private void setNotificationDropdown() {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.notification_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        notificationDropdown.setAdapter(adapter);
+
+    }
+
+    private void setDayPicked() {
+        dueDate.setDate(System.currentTimeMillis());
+        calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        dayPicked = sdf.format(calendar.getTime());
+    }
+
+    private void switchCheck() {
         locationFeatureSwitch = findViewById(R.id.LocationFeature);
         locationFeatureSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             scenarioCases.setVisibility(isChecked ? View.VISIBLE : View.GONE);
@@ -113,37 +134,37 @@ public class FormSetupActivity extends AppCompatActivity {
         });
     }
 
-    private void openGoogleMaps(){
+    private void openGoogleMaps() {
         mapsButton = findViewById(R.id.DestinationCalculator);
         mapsButton.setOnClickListener(v -> {
-            if (dayPicked != null){
+            if (dayPicked != null) {
                 Intent googleMaps = new Intent(FormSetupActivity.this, DestinationActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("TimeInUTC", String.valueOf(convertCurrentTimeToUTC()));
                 bundle.putString("TimeInUTCMinusOneHour", String.valueOf(convertCurrentTimeToUTC() - 3600000));
                 googleMaps.putExtras(bundle);
                 startActivityForResult(googleMaps, REQUEST_CODE);
-            }else {
+            } else {
                 Toast.makeText(this, "Set Time and Date", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private boolean isServicesUpdated(){
+    private boolean isServicesUpdated() {
         int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(FormSetupActivity.this);
-        if ( available == ConnectionResult.SUCCESS){
+        if (available == ConnectionResult.SUCCESS) {
             return true;
-        }else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
+        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
             Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(FormSetupActivity.this, available, ERROR_DIALOG_REQUEST);
             assert dialog != null;
             dialog.show();
-        }else {
+        } else {
             Toast.makeText(this, "You cant use map feature in this app", Toast.LENGTH_SHORT).show();
         }
         return false;
     }
 
-    private void dueDateCalculator(){
+    private void dueDateCalculator() {
         dueDate = findViewById(R.id.dueDate);
         dueDate.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             try {
@@ -164,7 +185,7 @@ public class FormSetupActivity extends AppCompatActivity {
         });
     }
 
-    private long convertCurrentTimeToUTC(){
+    private long convertCurrentTimeToUTC() {
         return strDate.getTime() + dueTime.getCurrentHour() * 3600000 + dueTime.getCurrentMinute() * 60000 - TimeZone.getDefault().getRawOffset();
     }
 
@@ -188,19 +209,19 @@ public class FormSetupActivity extends AppCompatActivity {
     }
 
     @SuppressLint("NonConstantResourceId")
-    private void radioGroupTransitModes(){
+    private void radioGroupTransitModes() {
         transitModes.setOnCheckedChangeListener((group, checkedId) -> {
             idForMode = transitModes.getCheckedRadioButtonId();
-            if (!timeForDirections.isEmpty()){
-                if (idForScenario == R.id.Average_Case_Scenario && idForMode == R.id.drivingMode){
+            if (!timeForDirections.isEmpty()) {
+                if (idForScenario == R.id.Average_Case_Scenario && idForMode == R.id.drivingMode) {
                     durationToDestination.setText(timeForDirections.get(1));
                     trafficModel = "Average";
                     typeOfTransfer = "Driving";
-                }else if (idForScenario == R.id.Worst_Case_Scenario && idForMode == R.id.drivingMode){
+                } else if (idForScenario == R.id.Worst_Case_Scenario && idForMode == R.id.drivingMode) {
                     durationToDestination.setText(timeForDirections.get(2));
                     trafficModel = "Worst";
                     typeOfTransfer = "Driving";
-                }else if (idForMode == R.id.walkingMode){
+                } else if (idForMode == R.id.walkingMode) {
                     durationToDestination.setText(timeForDirections.get(0));
                     trafficModel = "Average";
                     typeOfTransfer = "Walking";
@@ -210,19 +231,19 @@ public class FormSetupActivity extends AppCompatActivity {
 
     }
 
-    private void setScenarioMode(){
+    private void setScenarioMode() {
         scenarioCases.setOnCheckedChangeListener((group, checkedId) -> {
             idForScenario = scenarioCases.getCheckedRadioButtonId();
-            if (!timeForDirections.isEmpty()){
-                if (idForScenario == R.id.Average_Case_Scenario && idForMode == R.id.drivingMode){
+            if (!timeForDirections.isEmpty()) {
+                if (idForScenario == R.id.Average_Case_Scenario && idForMode == R.id.drivingMode) {
                     durationToDestination.setText(timeForDirections.get(1));
                     trafficModel = "Average";
                     typeOfTransfer = "Driving";
-                }else if (idForScenario == R.id.Worst_Case_Scenario && idForMode == R.id.drivingMode){
+                } else if (idForScenario == R.id.Worst_Case_Scenario && idForMode == R.id.drivingMode) {
                     durationToDestination.setText(timeForDirections.get(2));
                     trafficModel = "Worst";
                     typeOfTransfer = "Driving";
-                }else if (idForMode == R.id.walkingMode){
+                } else if (idForMode == R.id.walkingMode) {
                     durationToDestination.setText(timeForDirections.get(0));
                     trafficModel = "Average";
                     typeOfTransfer = "Walking";
@@ -232,25 +253,25 @@ public class FormSetupActivity extends AppCompatActivity {
     }
 
     @SuppressLint("SimpleDateFormat")
-    private void completeReminder(){
+    private void completeReminder() {
         ImageButton completeReminder = findViewById(R.id.completeReminder);
         completeReminder.setOnClickListener(v -> {
-            if (reminderName.getText().toString().equals("")){
-               reminderName.setError("Empty Field");
-               scrollView.scrollTo(reminderName.getScrollX(), reminderName.getScrollY());
-               return;
+            if (reminderName.getText().toString().equals("")) {
+                reminderName.setError("Empty Field");
+                scrollView.scrollTo(reminderName.getScrollX(), reminderName.getScrollY());
+                return;
             }
-            if (locationFeatureSwitch.isChecked()){
-                if (timeForDirections.isEmpty()){
+            if (locationFeatureSwitch.isChecked()) {
+                if (timeForDirections.isEmpty()) {
                     Toast.makeText(this, "Open Google maps Or close this feature", Toast.LENGTH_SHORT).show();
                     scrollView.scrollTo(mapsButton.getScrollX(), mapsButton.getScrollY());
                     return;
-                }else if (System.currentTimeMillis() >= notificationTimeInMilsCalculator(notificationDropdown.getSelectedItem().toString()) - notificationIncludingDistanceCalculation(durationToDestination.getText().toString())){
+                } else if (System.currentTimeMillis() >= notificationTimeInMilsCalculator(notificationDropdown.getSelectedItem().toString()) - notificationIncludingDistanceCalculation(durationToDestination.getText().toString())) {
                     Toast.makeText(this, "Time to destination plus notification time points to time that have passed", Toast.LENGTH_LONG).show();
                     return;
                 }
-            }else{
-                if (System.currentTimeMillis() >= notificationTimeInMilsCalculator(notificationDropdown.getSelectedItem().toString())){
+            } else {
+                if (System.currentTimeMillis() >= notificationTimeInMilsCalculator(notificationDropdown.getSelectedItem().toString())) {
                     Toast.makeText(this, "Invalid notification time selected", Toast.LENGTH_SHORT).show();
                     Toast.makeText(this, "Check your time/date/Notification time", Toast.LENGTH_SHORT).show();
                     return;
@@ -259,14 +280,14 @@ public class FormSetupActivity extends AppCompatActivity {
             Reminder reminder;
             long timeToNotifyTheUser;
             @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d", dueTime.getCurrentHour(), dueTime.getCurrentMinute());
-            if (locationFeatureSwitch.isChecked()){
-                if (trafficModel == null || typeOfTransfer == null){
+            if (locationFeatureSwitch.isChecked()) {
+                if (trafficModel == null || typeOfTransfer == null) {
                     trafficModel = "Average";
                     typeOfTransfer = "Driving";
                 }
                 timeToNotifyTheUser = notificationTimeInMilsCalculator(notificationDropdown.getSelectedItem().toString()) - notificationIncludingDistanceCalculation(durationToDestination.getText().toString());
                 reminder = new Reminder(reminderName.getText().toString(), dayPicked, time, timeForDirections, timeToNotifyTheUser, true, trafficModel, typeOfTransfer, timeOfTheEvent, false);
-            }else {
+            } else {
                 timeToNotifyTheUser = notificationTimeInMilsCalculator(notificationDropdown.getSelectedItem().toString());
                 reminder = new Reminder(reminderName.getText().toString(), dayPicked, time, timeForDirections, timeToNotifyTheUser, false, "", "", timeOfTheEvent, false);
             }
@@ -278,27 +299,27 @@ public class FormSetupActivity extends AppCompatActivity {
         });
     }
 
-    private long notificationTimeInMilsCalculator(String text){
+    private long notificationTimeInMilsCalculator(String text) {
         String[] split = text.split("\\s+");
         long timeForNotificationToSubtract;
-        if (split[1].equals("hours")){
+        if (split[1].equals("hours")) {
             timeForNotificationToSubtract = Long.parseLong(split[0]) * 3600000;
-        }else {
+        } else {
             timeForNotificationToSubtract = Long.parseLong(split[0]) * 60000;
         }
         timeOfTheEvent = strDate.getTime() + dueTime.getCurrentHour() * 3600000 + dueTime.getCurrentMinute() * 60000;
-        return  timeOfTheEvent - timeForNotificationToSubtract;
+        return timeOfTheEvent - timeForNotificationToSubtract;
     }
 
-    private long notificationIncludingDistanceCalculation(String text){
+    private long notificationIncludingDistanceCalculation(String text) {
         String[] split = text.split("\\s+");
-         long timeInMilsToArriveToDestination;
-        if (split.length == 4){
-            timeInMilsToArriveToDestination = Long.parseLong(split[0])* 3600000 + Long.parseLong(split[2]) * 60000;
-        }else {
-            if (split[1].equals("hours")){
+        long timeInMilsToArriveToDestination;
+        if (split.length == 4) {
+            timeInMilsToArriveToDestination = Long.parseLong(split[0]) * 3600000 + Long.parseLong(split[2]) * 60000;
+        } else {
+            if (split[1].equals("hours")) {
                 timeInMilsToArriveToDestination = Long.parseLong(split[0]) * 3600000;
-            }else {
+            } else {
                 timeInMilsToArriveToDestination = Long.parseLong(split[0]) * 60000;
             }
         }

@@ -7,17 +7,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/notificationFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/mainToolBar"
-        android:layout_marginTop="@dimen/standardMargin"
-        android:layout_marginEnd="@dimen/standardMargin"
-        android:name="com.example.reminder.NotificationPanel"
-        android:visibility="gone"/>
-
-
     <Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

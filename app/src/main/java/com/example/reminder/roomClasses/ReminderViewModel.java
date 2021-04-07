@@ -1,11 +1,15 @@
 package com.example.reminder.roomClasses;
 
 import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+
 import com.example.reminder.Reminder;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 public class ReminderViewModel extends AndroidViewModel {
@@ -18,10 +22,12 @@ public class ReminderViewModel extends AndroidViewModel {
     public ReminderViewModel(@NonNull @NotNull Application application) {
         super(application);
         reminderRepository = new ReminderRepository(application);
+        selectCompletedReminders = reminderRepository.getCompletedReminders();
         reminders = reminderRepository.getAllReminders();
         selectCurrentReminders = reminderRepository.getCurrentReminders();
-        selectCompletedReminders = reminderRepository.getCompletedReminders();
+
     }
+
 
     public void insert(Reminder reminder) {
         reminderRepository.insert(reminder);
@@ -50,7 +56,6 @@ public class ReminderViewModel extends AndroidViewModel {
     public LiveData<List<Reminder>> getSelectCompletedReminders() {
         return selectCompletedReminders;
     }
-
 
     public void updateTable() {
         reminderRepository.updateTable();

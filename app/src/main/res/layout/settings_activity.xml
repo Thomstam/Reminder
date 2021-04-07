@@ -1,0 +1,39 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Toolbar
+        android:id="@+id/SettingToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="HardcodedText"
+        android:background="@color/design_default_color_primary">
+
+        <ImageButton
+            android:id="@+id/BackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/halfStandardMargin"
+            android:layout_marginEnd="@dimen/standardMargin"
+            android:layout_marginBottom="@dimen/halfStandardMargin"
+            android:background="@color/design_default_color_primary"
+            android:contentDescription="BackButton"
+            android:src="@drawable/ic_baseline_arrow_back_24"
+            tools:ignore="ImageContrastCheck,TouchTargetSizeCheck" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            android:textSize="24sp"
+            tools:ignore="TextContrastCheck" />
+    </Toolbar>
+
+    <FrameLayout
+        android:id="@+id/settings"
+        android:layout_below="@id/SettingToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>

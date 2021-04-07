@@ -39,19 +39,25 @@ public class RecyclerCustom extends RecyclerView.Adapter<RecyclerCustom.Reminder
         holder.dateOfTheReminder.setText(reminderList.get(position).getDateOfTheReminder());
         holder.timeOfTheReminder.setText(reminderList.get(position).getTimeOfTheReminder());
         if (reminderList.get(position).isLocationFeatureActive()) {
-            if (reminderList.get(position).getTypeOfTransfer().equals("Walking")) {
-                holder.transitIcon.setImageResource(R.drawable.walk_directions_icon);
-                holder.timeToDestination.setText(reminderList.get(position).getTimeToGetToDestination().get(0));
-            } else {
-                holder.transitIcon.setImageResource(R.drawable.car_direction_icon);
-                if (reminderList.get(position).getModelAverageOrWorse().equals("Average")){
-                    holder.timeToDestination.setText(reminderList.get(position).getTimeToGetToDestination().get(1));
-                }else {
-                    holder.timeToDestination.setText(reminderList.get(position).getTimeToGetToDestination().get(2));
+            if (reminderList.get(position).getTypeOfTransfer() != null && reminderList.get(position).getModelAverageOrWorse() != null){
+                if (reminderList.get(position).getTypeOfTransfer().equals("Walking")) {
+                    holder.transitIcon.setImageResource(R.drawable.walk_directions_icon);
+                    holder.timeToDestination.setText(reminderList.get(position).getTimeToGetToDestination().get(0));
+                } else {
+                    holder.transitIcon.setImageResource(R.drawable.car_direction_icon);
+                    if (reminderList.get(position).getModelAverageOrWorse().equals("Average")){
+                        holder.timeToDestination.setText(reminderList.get(position).getTimeToGetToDestination().get(1));
+                    }else {
+                        holder.timeToDestination.setText(reminderList.get(position).getTimeToGetToDestination().get(2));
+                    }
                 }
+                holder.trafficModel.setText(reminderList.get(position).getModelAverageOrWorse());
+            } else {
+                holder.transitIcon.setVisibility(View.GONE);
+                holder.trafficModel.setVisibility(View.GONE);
+                holder.timeToDestination.setVisibility(View.GONE);
             }
-            holder.trafficModel.setText(reminderList.get(position).getModelAverageOrWorse());
-        } else {
+        }else {
             holder.transitIcon.setVisibility(View.GONE);
             holder.trafficModel.setVisibility(View.GONE);
             holder.timeToDestination.setVisibility(View.GONE);
