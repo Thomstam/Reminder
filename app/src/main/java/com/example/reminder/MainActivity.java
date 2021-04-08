@@ -2,7 +2,10 @@ package com.example.reminder;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,12 +36,14 @@ public class MainActivity extends AppCompatActivity {
     private ReminderViewModel reminderViewModelCurrent;
     private ReminderViewModel reminderViewModelCompleted;
     private ReminderViewModel reminderViewModelAll;
-    public static final String NOTIFICATION_CHANNEL_ID = "10001";
+    private final String channelId = "Default Channel";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        createNotificationChannel();
 
         setMenu();
 
@@ -66,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
             } else if (item.getItemId() == R.id.notificationSettings) {
-                Toast.makeText(MainActivity.this, "Jump To Notification Settings", Toast.LENGTH_SHORT).show();
                 notificationFragment();
             } else if (item.getItemId() == R.id.about) {
                 Toast.makeText(MainActivity.this, "Jump to about fragment", Toast.LENGTH_SHORT).show();
@@ -167,8 +171,8 @@ public class MainActivity extends AppCompatActivity {
                 assert data != null;
                 Reminder reminder = (Reminder) data.getExtras().get("Reminder");
                 reminderViewModelCurrent.insert(reminder);
-                SettingsActivity notification = new SettingsActivity();
-                notification.scheduleNotification(notification.getNotification(reminder), reminder.getTimeToNotifyForTheReminder());
+                AlarmService notification = new AlarmService(this, reminder);
+                notification.setExactAlarm();
             }
         }
         if (requestCode == REQUEST_CODE_FOR_EDIT_PANEL) {
@@ -183,6 +187,18 @@ public class MainActivity extends AppCompatActivity {
                 }
                 recyclerCustom.notifyDataSetChanged();
             }
+        }
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Channel Name";
+            String description = "Channel Description";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(channelId, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 }
