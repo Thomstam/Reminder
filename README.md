@@ -2,7 +2,7 @@
 
 REQUIREMENTS
 
-Android Studion Beta(Current Version Arctic Fox 2020.3.1)
+Android Studion Current Version 4.1.3
 
 Google API key with enabled API's:
 
