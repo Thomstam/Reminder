@@ -18,7 +18,8 @@ class NotificationReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
 
-        val reminder = intent.getParcelableExtra<Reminder>("Reminder")
+        val bundle =  intent.getBundleExtra("bundle")
+        val reminder = bundle?.getParcelable<Reminder>("Reminder")
         val intent = Intent(context , MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }

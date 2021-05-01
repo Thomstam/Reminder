@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 
 class AlarmService(private  val context: Context, val reminder: Reminder) {
 
@@ -38,9 +39,9 @@ class AlarmService(private  val context: Context, val reminder: Reminder) {
     }
     private fun getIntent() : Intent {
         val intent = Intent(context, NotificationReceiver::class.java)
-        intent.putExtra("Test", "Test")
-        intent.putExtra("Reminder", reminder)
-        intent.putExtra("Name", reminder.nameOfTheReminder)
+        val bundle = Bundle()
+        bundle.putParcelable("Reminder", reminder)
+        intent.putExtra("bundle", bundle)
         return intent
     }
 
